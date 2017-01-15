@@ -1,7 +1,53 @@
 'use strict';
+
 /**
- * This module extends the graphql.js schema and types by adding diff and merge functions.
+ * GraphQL schema.
+ * @external GraphQLSchema
+ * @see {@link https://github.com/graphql/graphql-js/blob/master/src/type/schema.js}
  */
+
+/**
+ * GraphQL union type.
+ * @external GraphQLUnionType
+ * @see {@link https://github.com/graphql/graphql-js/blob/master/src/type/definition.js}
+ */
+
+/**
+ * GraphQL object type.
+ * @external GraphQLObjectType
+ * @see {@link https://github.com/graphql/graphql-js/blob/master/src/type/definition.js}
+ */
+
+/**
+ * GraphQL interface type.
+ * @external GraphQLInterfaceType
+ * @see {@link https://github.com/graphql/graphql-js/blob/master/src/type/definition.js}
+ */
+
+/**
+ * GraphQL scalar type.
+ * @external GraphQLScalarType
+ * @see {@link https://github.com/graphql/graphql-js/blob/master/src/type/definition.js}
+ */
+
+/**
+ * GraphQL enum type.
+ * @external GraphQLEnumType
+ * @see {@link https://github.com/graphql/graphql-js/blob/master/src/type/definition.js}
+ */
+
+/**
+ * GraphQL non-null type.
+ * @external GraphQLNonNull
+ * @see {@link https://github.com/graphql/graphql-js/blob/master/src/type/definition.js}
+ */
+
+/**
+ * GraphQL list type.
+ * @external GraphQLList
+ * @see {@link https://github.com/graphql/graphql-js/blob/master/src/type/definition.js}
+ */
+
 (function () {
 
     const GraphQLSchema = require('graphql/type/schema').GraphQLSchema,
@@ -33,8 +79,9 @@
 
     /**
      * Reports differences between this GraphQLSchema and another one by diffing all of the types.
-     * @param other another GraphQLSchema
-     * @returns {Array} list of descriptions of the differences between the schemas
+     * @param {GraphQLSchema} other another GraphQLSchema
+     * @returns {String[]} list of descriptions of the differences between the schemas
+     * @function external:GraphQLSchema#diff
      */
     function diffSchema(other) {
         var diffs = [];
@@ -58,8 +105,9 @@
 
     /**
      * Reports differences between this GraphQLScalarType and another.
-     * @param other another GraphQLScalarType
-     * @returns {Array} list of descriptions of the differences between the GraphQLScalarTypes
+     * @param {GraphQLScalarType} other another GraphQLScalarType
+     * @returns {String[]} list of descriptions of the differences between the GraphQLScalarTypes
+     * @function external:GraphQLScalarType#diff
      */
     function diffScalarTypes(other) {
         if (!other) {
@@ -79,8 +127,9 @@
 
     /**
      * Reports differences between this GraphQLEnumType and another. The name and enum values are compared.
-     * @param other another GraphQLEnumType
-     * @returns {Array} list of descriptions of the differences
+     * @param {GraphQLEnumType} other another GraphQLEnumType
+     * @returns {String[]} list of descriptions of the differences
+     * @function external:GraphQLEnumType#diff
      */
     function diffEnumTypes(other) {
         var diffs = [];
@@ -105,9 +154,10 @@
     }
 
     /**
-     * Reports differences between this GraphQLUnionType and another.
-     * @param other another GraphQLUnionType
-     * @returns {Array} list of descriptions of the differences
+     * Reports differences between this GraphQLUnionType and another GraphQLUnionType.
+     * @param {GraphQLUnionType} other another GraphQLUnionType
+     * @returns {String[]} list of descriptions of the differences
+     * @function external:GraphQLUnionType#diff
      */
     function diffUnionTypes(other) {
         if (!other) {
@@ -137,8 +187,9 @@
 
     /**
      * Reports differences between this GraphQLObjectType or GraphQLInterfaceType and another. Fields and implemented interfaces are compared.
-     * @param other another GraphQLObjectType or GraphQLInterfaceType
-     * @returns {Array} list of descriptions of the differences
+     * @param {GraphQLObjectType|GraphQLInterfaceType} other another GraphQLObjectType or GraphQLInterfaceType
+     * @returns {String[]} list of descriptions of the differences
+     * @function external:GraphQLObjectType#diff
      */
     function diffObjectTypes(other) {
         var diffs = [];
@@ -256,8 +307,9 @@
     /**
      * Merge this GraphQLSchema with another one. This schema's types and fields take precedence over other's.
      * Does not modify either schema, but instead returns a new one.
-     * @param other another GraphQLSchema to merge with this one
+     * @param {GraphQLSchema} other another GraphQLSchema to merge with this one
      * @returns {GraphQLSchema} new GraphQLSchema representing this merged with other
+     * @function external:GraphQLSchema#merge
      */
     function mergeSchema(other) {
         if (!other || !(other instanceof GraphQLSchema)) {
@@ -280,9 +332,10 @@
     }
 
     /**
-     * Returns other type if it exists, otherwise this.
-     * @param other another GraphQL type object to merge with this
-     * @returns {GraphQLList|GraphQLNonNull|GraphQLScalarType|GraphQLEnum}
+     * Merges a type by simply overwriting this type with other if it exists.
+     * @param {GraphQLList|GraphQLNonNull|GraphQLScalarType|GraphQLEnumType} other another GraphQL type object to merge with this
+     * @returns {GraphQLList|GraphQLNonNull|GraphQLScalarType|GraphQLEnumType} other if it exists, otherwise this.
+     * @function external:GraphQLScalarType#merge
      */
     function overwriteType(other) {
         return other || this;
@@ -292,16 +345,17 @@
      * Merges another GraphQLObjectType or GraphQLInterfaceType with this one by taking the union of all fields in both types, overwriting this type's
      * fields with the other's if there are conflicts. For GraphQLObjectTypes, implemented interfaces are also merged.
      * @param other another GraphQL type to merge with this one
-     * @returns {GraphQLObjectType|GraphQLInterfaceType}
+     * @returns {GraphQLObjectType|GraphQLInterfaceType} a new GraphQLObjectType resulting from merging `this` and `other`
+     * @function external:GraphQLObjectType#merge
      */
     function mergeObjectTypes(other) {
+        const mergedType = cloneDeep(this);
         if (!other) {
-            return this;
+            return mergedType;
         }
         if (this.constructor.name !== other.constructor.name) {
             throw new TypeError(format('Cannot merge with different base type. this: %s, other: %s.', this.constructor.name, other.constructor.name));
         }
-        const mergedType = cloneDeep(this);
         const otherFields = Object.keys(other.getFields());
         for (var i = 0; i < otherFields.length; i++) {
             const key = otherFields[i];
