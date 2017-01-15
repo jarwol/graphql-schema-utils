@@ -1,0 +1,33 @@
+{
+  "name": "graphql-schema-utils",
+  "version": "0.1.0",
+  "description": "Extensions for graphql-js to support diffing and merging types and schemas.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jarwol/graphql-schema-utils.git"
+  },
+  "keywords": [
+    "graphql",
+    "graphqljs"
+  ],
+  "author": "Jared Wolinsky <jared.wolinsky@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jarwol/graphql-schema-utils/issues"
+  },
+  "homepage": "https://github.com/jarwol/graphql-schema-utils#readme",
+  "dependencies": {
+    "lodash.clonedeep": "^4.5.0"
+  },
+  "peerDependencies": {
+    "graphql": "^0.8.2"
+  },
+  "devDependencies": {
+    "graphql": "^0.8.2",
+    "mocha": "^3.2.0"
+  }
+}
