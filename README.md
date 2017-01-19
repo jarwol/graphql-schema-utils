@@ -1,7 +1,42 @@
 # graphql-schema-utils
 Extensions for graphql-js to support diffing and merging types and schemas.
 
+# Getting Started
+**Install it**
+```
+npm install --save graphql-schema-utils
+```
+
+**Require it**
+```
+# graphql-js prototypes are automatically extended
+require('graphql-schema-utils');
+```
+
+**Use it**
+```
+# Operate on GraphQLSchemas
+const thisSchema = buildSchema(...);
+const otherSchema = buildSchema(...);
+const diffs = schema1.diff(schema2);
+const mergedSchema = schema1.merge(schema2);
+```
+```
+# Operate on GraphQL types
+const thisType = new GraphQLObjectType(...);
+const otherType = new GraphQLObjectType(...);
+const diffs = thisType.diff(otherType);
+const mergedType = thisType.merge(otherType);
+```
+
 # API Docs
+## Classes
+
+<dl>
+<dt><a href="#GraphQLDiff">GraphQLDiff</a></dt>
+<dd><p>Object containing metadata about a diff between two GraphQL types.</p>
+</dd>
+</dl>
 <dl>
 <dt><a href="#external_GraphQLSchema">GraphQLSchema</a></dt>
 <dd><p>GraphQL schema.</p>
@@ -29,6 +64,14 @@ Extensions for graphql-js to support diffing and merging types and schemas.
 </dd>
 </dl>
 
+## Constants
+
+<dl>
+<dt><a href="#DiffType">DiffType</a> : <code>Object</code></dt>
+<dd><p>Constants representing valid types of GraphQLDiffs.</p>
+</dd>
+</dl>
+
 <a name="external_GraphQLSchema"></a>
 
 ## GraphQLSchema
@@ -38,16 +81,16 @@ GraphQL schema.
 **See**: [https://github.com/graphql/graphql-js/blob/master/src/type/schema.js](https://github.com/graphql/graphql-js/blob/master/src/type/schema.js)
 
 * [GraphQLSchema](#external_GraphQLSchema)
-    * [.diff(other)](#external_GraphQLSchema+diff) ⇒ <code>Array.&lt;String&gt;</code>
+    * [.diff(other)](#external_GraphQLSchema+diff) ⇒ <code>Array.&lt;GraphQLDiff&gt;</code>
     * [.merge(other)](#external_GraphQLSchema+merge) ⇒ <code>GraphQLSchema</code>
 
 <a name="external_GraphQLSchema+diff"></a>
 
-### graphQLSchema.diff(other) ⇒ <code>Array.&lt;String&gt;</code>
+### graphQLSchema.diff(other) ⇒ <code>Array.&lt;GraphQLDiff&gt;</code>
 Reports differences between this GraphQLSchema and another one by diffing all of the types.
 
 **Kind**: instance method of <code>[GraphQLSchema](#external_GraphQLSchema)</code>
-**Returns**: <code>Array.&lt;String&gt;</code> - list of descriptions of the differences between the schemas
+**Returns**: <code>Array.&lt;GraphQLDiff&gt;</code> - array of differences between the schemas
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -75,11 +118,11 @@ GraphQL union type.
 **See**: [https://github.com/graphql/graphql-js/blob/master/src/type/definition.js](https://github.com/graphql/graphql-js/blob/master/src/type/definition.js)
 <a name="external_GraphQLUnionType+diff"></a>
 
-### graphQLUnionType.diff(other) ⇒ <code>Array.&lt;String&gt;</code>
+### graphQLUnionType.diff(other) ⇒ <code>Array.&lt;GraphQLDiff&gt;</code>
 Reports differences between this GraphQLUnionType and another GraphQLUnionType.
 
 **Kind**: instance method of <code>[GraphQLUnionType](#external_GraphQLUnionType)</code>
-**Returns**: <code>Array.&lt;String&gt;</code> - list of descriptions of the differences
+**Returns**: <code>Array.&lt;GraphQLDiff&gt;</code> - array of differences
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -94,33 +137,33 @@ GraphQL object type.
 **See**: [https://github.com/graphql/graphql-js/blob/master/src/type/definition.js](https://github.com/graphql/graphql-js/blob/master/src/type/definition.js)
 
 * [GraphQLObjectType](#external_GraphQLObjectType)
-    * [.merge](#external_GraphQLObjectType+merge) ⇒ <code>GraphQLObjectType</code> &#124; <code>GraphQLInterfaceType</code>
-    * [.diff(other)](#external_GraphQLObjectType+diff) ⇒ <code>Array.&lt;String&gt;</code>
-
-<a name="external_GraphQLObjectType+merge"></a>
-
-### graphQLObjectType.merge ⇒ <code>GraphQLObjectType</code> &#124; <code>GraphQLInterfaceType</code>
-Merges another GraphQLObjectType or GraphQLInterfaceType with this one by taking the union of all fields in both types, overwriting this type's
-fields with the other's if there are conflicts. For GraphQLObjectTypes, implemented interfaces are also merged.
-
-**Kind**: instance property of <code>[GraphQLObjectType](#external_GraphQLObjectType)</code>
-**Returns**: <code>GraphQLObjectType</code> &#124; <code>GraphQLInterfaceType</code> - a new type object resulting from merging `this` and `other`
-
-| Param | Description |
-| --- | --- |
-| other | another GraphQL type to merge with this one |
+    * [.diff(other)](#external_GraphQLObjectType+diff) ⇒ <code>Array.&lt;GraphQLDiff&gt;</code>
+    * [.merge(other)](#external_GraphQLObjectType+merge) ⇒ <code>GraphQLObjectType</code> &#124; <code>GraphQLInterfaceType</code>
 
 <a name="external_GraphQLObjectType+diff"></a>
 
-### graphQLObjectType.diff(other) ⇒ <code>Array.&lt;String&gt;</code>
+### graphQLObjectType.diff(other) ⇒ <code>Array.&lt;GraphQLDiff&gt;</code>
 Reports differences between this GraphQLObjectType or GraphQLInterfaceType and another. Fields and implemented interfaces are compared.
 
 **Kind**: instance method of <code>[GraphQLObjectType](#external_GraphQLObjectType)</code>
-**Returns**: <code>Array.&lt;String&gt;</code> - list of descriptions of the differences
+**Returns**: <code>Array.&lt;GraphQLDiff&gt;</code> - array of differences
 
 | Param | Type | Description |
 | --- | --- | --- |
 | other | <code>GraphQLObjectType</code> &#124; <code>GraphQLInterfaceType</code> | another GraphQLObjectType or GraphQLInterfaceType |
+
+<a name="external_GraphQLObjectType+merge"></a>
+
+### graphQLObjectType.merge(other) ⇒ <code>GraphQLObjectType</code> &#124; <code>GraphQLInterfaceType</code>
+Merges another GraphQLObjectType or GraphQLInterfaceType with this one by taking the union of all fields in both types, overwriting this type's
+fields with the other's if there are conflicts. For GraphQLObjectTypes, implemented interfaces are also merged.
+
+**Kind**: instance method of <code>[GraphQLObjectType](#external_GraphQLObjectType)</code>
+**Returns**: <code>GraphQLObjectType</code> &#124; <code>GraphQLInterfaceType</code> - a new GraphQLObjectType resulting from merging `this` and `other`
+
+| Param | Description |
+| --- | --- |
+| other | another GraphQL type to merge with this one |
 
 <a name="external_GraphQLInterfaceType"></a>
 
@@ -138,16 +181,16 @@ GraphQL scalar type.
 **See**: [https://github.com/graphql/graphql-js/blob/master/src/type/definition.js](https://github.com/graphql/graphql-js/blob/master/src/type/definition.js)
 
 * [GraphQLScalarType](#external_GraphQLScalarType)
-    * [.diff(other)](#external_GraphQLScalarType+diff) ⇒ <code>Array.&lt;String&gt;</code>
+    * [.diff(other)](#external_GraphQLScalarType+diff) ⇒ <code>Array.&lt;GraphQLDiff&gt;</code>
     * [.merge(other)](#external_GraphQLScalarType+merge) ⇒ <code>GraphQLList</code> &#124; <code>GraphQLNonNull</code> &#124; <code>GraphQLScalarType</code> &#124; <code>GraphQLEnumType</code>
 
 <a name="external_GraphQLScalarType+diff"></a>
 
-### graphQLScalarType.diff(other) ⇒ <code>Array.&lt;String&gt;</code>
+### graphQLScalarType.diff(other) ⇒ <code>Array.&lt;GraphQLDiff&gt;</code>
 Reports differences between this GraphQLScalarType and another.
 
 **Kind**: instance method of <code>[GraphQLScalarType](#external_GraphQLScalarType)</code>
-**Returns**: <code>Array.&lt;String&gt;</code> - list of descriptions of the differences between the GraphQLScalarTypes
+**Returns**: <code>Array.&lt;GraphQLDiff&gt;</code> - array of differences
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -174,11 +217,11 @@ GraphQL enum type.
 **See**: [https://github.com/graphql/graphql-js/blob/master/src/type/definition.js](https://github.com/graphql/graphql-js/blob/master/src/type/definition.js)
 <a name="external_GraphQLEnumType+diff"></a>
 
-### graphQLEnumType.diff(other) ⇒ <code>Array.&lt;String&gt;</code>
+### graphQLEnumType.diff(other) ⇒ <code>Array.&lt;GraphQLDiff&gt;</code>
 Reports differences between this GraphQLEnumType and another. The name and enum values are compared.
 
 **Kind**: instance method of <code>[GraphQLEnumType](#external_GraphQLEnumType)</code>
-**Returns**: <code>Array.&lt;String&gt;</code> - list of descriptions of the differences
+**Returns**: <code>Array.&lt;GraphQLDiff&gt;</code> - array of differences
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -198,10 +241,31 @@ GraphQL list type.
 
 **Kind**: global external
 **See**: [https://github.com/graphql/graphql-js/blob/master/src/type/definition.js](https://github.com/graphql/graphql-js/blob/master/src/type/definition.js)
+<a name="GraphQLDiff"></a>
+
+## GraphQLDiff
+**Kind**: global class
+<a name="new_GraphQLDiff_new"></a>
+
+### new GraphQLDiff(thisType, otherType, diffType, description)
+Create a new instance of a GraphQLDiff, containing metadata about a difference between two GraphQL types.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| thisType | <code>GraphQLObjectType</code> &#124; <code>GraphQLScalarType</code> &#124; <code>GraphQLEnumType</code> &#124; <code>GraphQLNonNull</code> &#124; <code>GraphQLList</code> &#124; <code>GraphQLUnionType</code> | the GraphQL type instance on which the `diff` method was executed |
+| otherType | <code>GraphQLObjectType</code> &#124; <code>GraphQLScalarType</code> &#124; <code>GraphQLEnumType</code> &#124; <code>GraphQLNonNull</code> &#124; <code>GraphQLList</code> &#124; <code>GraphQLUnionType</code> | the GraphQL type instance which was compared to thisType |
+| diffType | <code>string</code> | the specific kind of difference between thisType and otherType |
+| description | <code>string</code> |  |
+
+<a name="DiffType"></a>
+
+## DiffType : <code>Object</code>
+Constants representing valid types of GraphQLDiffs.
+
+**Kind**: global constant
 
 # Todo
-* Return GraphQLDiff objects instead of only string descriptions for diff operations.
 * Add support for GraphQLInputObjectType.
-* Support browser in addition to Node.
 * Add unit tests for diff/merge at the type level. Currently there are only tests for GraphQLSchema.
 * Fix JSDoc for function implementations that apply to multiple types (diffObjectTypes() applies to both GraphQLObjectType and GraphQLInterfaceType).
