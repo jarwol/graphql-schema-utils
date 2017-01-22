@@ -321,10 +321,13 @@ function getArgsString(field) {
  * @function external:GraphQLSchema#merge
  */
 function mergeSchema(other) {
-    if (!other || !(other instanceof GraphQLSchema)) {
+    const merged = cloneDeep(this);
+    if(!other){
+        return merged;
+    }
+    if (!(other instanceof GraphQLSchema)) {
         throw new TypeError('Cannot merge with null/undefined or non-GraphQLSchema object.');
     }
-    const merged = cloneDeep(this);
     for (let key in this.getTypeMap()) {
         const thisType = this.getTypeMap()[key];
         const otherType = other.getTypeMap()[key];

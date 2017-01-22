@@ -444,6 +444,14 @@ describe('GraphQLSchema', function () {
     });
 
     describe('#merge()', function () {
+        it('makes no change if merged with null schema', function (done) {
+            const a = buildSchema(schema1);
+            const merged = a.merge(null);
+
+            assert.deepEqual(a.diff(merged), []);
+            done();
+        });
+
         it('makes no change if two identical schemas are merged', function (done) {
             const a = buildSchema(schema1);
             const b = buildSchema(schema1);
