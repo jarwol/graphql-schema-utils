@@ -683,5 +683,70 @@ describe('GraphQLSchema', function () {
             assert.deepEqual(expected.diff(merged), []);
             done();
         });
+
+        it('merges union types by including all types from both', function (done) {
+            const schema1 =
+                'type Query {\n' +
+                '    Pet(name: String): Pet\n' +
+                '}\n' +
+                'type Cat {\n' +
+                '    name: String\n' +
+                '    catNip: String\n' +
+                '    scratchingPost: String\n' +
+                '}\n' +
+                'type Fish {\n' +
+                '    name: String\n' +
+                '    bowl: String\n' +
+                '}\n' +
+                'type Dog {\n' +
+                '    name: String\n' +
+                '    bone: String\n' +
+                '    leash: String\n' +
+                '}\n' +
+                'union Pet = Cat | Dog';
+
+            const schema2 =
+                'type Query {\n' +
+                '    Pet(name: String): Pet\n' +
+                '}\n' +
+                'type Dog {\n' +
+                '    name: String\n' +
+                '    bone: String\n' +
+                '    leash: String\n' +
+                '}\n' +
+                'type Fish {\n' +
+                '    name: String\n' +
+                '    bowl: String\n' +
+                '}\n' +
+                'union Pet = Dog | Fish';
+
+            const expectedSchema =
+                'type Query {\n' +
+                '    Pet(name: String): Pet\n' +
+                '}\n' +
+                'type Cat {\n' +
+                '    name: String\n' +
+                '    catNip: String\n' +
+                '    scratchingPost: String\n' +
+                '}\n' +
+                'type Dog {\n' +
+                '    name: String\n' +
+                '    bone: String\n' +
+                '    leash: String\n' +
+                '}\n' +
+                'type Fish {\n' +
+                '    name: String\n' +
+                '    bowl: String\n' +
+                '}\n' +
+                'union Pet = Cat | Dog | Fish';
+
+            const a = buildSchema(schema1);
+            const b = buildSchema(schema2);
+            const expected = buildSchema(expectedSchema);
+
+            const merged = a.merge(b);
+            assert.deepEqual(expected.diff(merged), []);
+            done();
+        });
     });
 });

@@ -128,6 +128,18 @@ Reports differences between this GraphQLUnionType and another GraphQLUnionType.
 | --- | --- | --- |
 | other | <code>GraphQLUnionType</code> | another GraphQLUnionType |
 
+<a name="external_GraphQLUnionType+merge"></a>
+
+### graphQLUnionType.merge(other) ⇒ <code>GraphQLUnionType</code>
+Merges this GraphQLUnionType with another GraphQLUnionType by taking the union of the types included in both.
+
+**Kind**: instance method of <code>[GraphQLUnionType](#external_GraphQLUnionType)</code>
+**Returns**: <code>GraphQLUnionType</code> - a new GraphQLUnionType resulting from merging `this` and `other`
+
+| Param | Description |
+| --- | --- |
+| other | another GraphQLUnionType to merge with this one |
+
 <a name="external_GraphQLObjectType"></a>
 
 ## GraphQLObjectType

@@ -58,7 +58,8 @@ const GraphQLSchema = require('graphql/type/schema').GraphQLSchema,
     GraphQLInterfaceType = require('graphql/type/definition').GraphQLInterfaceType,
     GraphQLDiff = require('./lib/diff').GraphQLDiff,
     DiffType = require('./lib/diff').DiffType,
-    cloneDeep = require('lodash.clonedeep');
+    cloneDeep = require('lodash.clonedeep'),
+    union = require('lodash.union');
 
 // Diff extensions
 GraphQLSchema.prototype.diff = diffSchema;
@@ -71,6 +72,7 @@ GraphQLUnionType.prototype.diff = diffUnionTypes;
 GraphQLSchema.prototype.merge = mergeSchema;
 GraphQLObjectType.prototype.merge = GraphQLInterfaceType.prototype.merge = mergeObjectTypes;
 GraphQLList.prototype.merge = GraphQLNonNull.prototype.merge = GraphQLScalarType.prototype.merge = GraphQLEnumType.prototype.merge = overwriteType;
+GraphQLUnionType.prototype.merge = mergeUnionTypes;
 
 /*****************************************************
  * DIFF
@@ -379,6 +381,25 @@ function mergeObjectTypes(other) {
     if (this instanceof GraphQLObjectType) {
         mergedType._interfaces = Array.from(new Set(this.getInterfaces().concat(other.getInterfaces())));
     }
+    return mergedType;
+}
+
+/**
+ * Merges this GraphQLUnionType with another GraphQLUnionType by taking the union of the types included in both.
+ * @param other another GraphQLUnionType to merge with this one
+ * @returns {GraphQLUnionType} a new GraphQLUnionType resulting from merging `this` and `other`
+ * @function external:GraphQLUnionType#merge
+ */
+function mergeUnionTypes(other) {
+    const mergedType = cloneDeep(this);
+    if (!other) {
+        return mergedType;
+    }
+    if (this.constructor.name !== other.constructor.name) {
+        throw new TypeError(format('Cannot merge with different base type. this: {0}, other: {0}.', this.constructor.name, other.constructor.name));
+    }
+    const thisTypes = new Map(this.getTypes().map(type => [type.name, true]));
+    mergedType._types = mergedType._types.concat(other.getTypes().filter(type => !thisTypes.get(type.name)));
     return mergedType;
 }
 
