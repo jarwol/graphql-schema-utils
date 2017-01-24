@@ -58,8 +58,7 @@ const GraphQLSchema = require('graphql/type/schema').GraphQLSchema,
     GraphQLInterfaceType = require('graphql/type/definition').GraphQLInterfaceType,
     GraphQLDiff = require('./lib/diff').GraphQLDiff,
     DiffType = require('./lib/diff').DiffType,
-    cloneDeep = require('lodash.clonedeep'),
-    union = require('lodash.union');
+    cloneDeep = require('lodash.clonedeep');
 
 // Diff extensions
 GraphQLSchema.prototype.diff = diffSchema;
