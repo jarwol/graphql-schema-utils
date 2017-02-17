@@ -405,6 +405,7 @@ describe('GraphQLSchema', function () {
                 '    RED\n' +
                 '    BLUE\n' +
                 '    ORANGE\n' +
+                '    BLACK\n' +
                 '}\n' +
                 'enum Car {\n' +
                 '    # honda\n' +
@@ -415,6 +416,7 @@ describe('GraphQLSchema', function () {
             const b = buildSchema(schema2);
             const diffs = a.diff(b);
             assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.EnumDiff, 'Enum diff on type Color. this schema: `GREEN=GREEN` vs. other schema: `ORANGE=ORANGE`.')));
+            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.EnumDiff, 'Enum value missing from this schema: Color.BLACK.')));
             assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.EnumDiff, 'Description diff on enum value Car.HONDA. this schema: `"from Japan"` vs. other schema: `"honda"`.')));
             done();
         });

@@ -149,11 +149,14 @@ function diffEnumTypes(other, options) {
     for (let i = 0; i < this.getValues().length; i++) {
         diffs = diffs.concat(diffEnumValues(this.getValues()[i], other.getValues()[i], this, other, options));
     }
+    for (let i = 0; i < other.getValues().length; i++) {
+        diffs = diffs.concat(diffEnumValues(this.getValues()[i], other.getValues()[i], this, other, options));
+    }
     if (this.description !== other.description) {
         const description = format('Description diff on type {0}. {1}: `"{2}"` vs. {3}: `"{4}"`.', this.name, options.labelForThis, this.description, options.labelForOther, other.description);
         diffs.push(new GraphQLDiff(this, other, DiffType.TypeDescriptionDiff, description));
     }
-    return diffs;
+    return dedupe(diffs);
 }
 
 /**
@@ -304,6 +307,14 @@ function interfacesEqual(thisType, otherType) {
 
 function diffEnumValues(thisVal, otherVal, thisType, otherType, options) {
     const diffs = [];
+    if (!thisVal && otherVal) {
+        const description = format('Enum value missing from {0}: {1}.{2}.', options.labelForThis, otherType.name, otherVal.name);
+        return [new GraphQLDiff(thisType, otherType, DiffType.EnumDiff, description)];
+    }
+    if (thisVal && !otherVal) {
+        const description = format('Enum value missing from {0}: {1}.{2}.', options.labelForOther, thisType.name, thisVal.name);
+        return [new GraphQLDiff(thisType, otherType, DiffType.EnumDiff, description)];
+    }
     if (thisVal.name !== otherVal.name || thisVal.value !== otherVal.value) {
         const description = format('Enum diff on type {0}. {1}: `{2}={3}` vs. {4}: `{5}={6}`.', thisType.name, options.labelForThis, thisVal.name, thisVal.value, options.labelForOther, otherVal.name, otherVal.value);
         return [new GraphQLDiff(thisType, otherType, DiffType.EnumDiff, description)];
@@ -464,5 +475,16 @@ function format(str) {
     let args = Array.prototype.slice.call(arguments, 1);
     return str.replace(/{(\d+)}/g, function (match, number) {
         return typeof args[number] != 'undefined' ? args[number] : match;
+    });
+}
+
+function dedupe(diffs) {
+    const seen = new Map();
+    return diffs.filter(function(diff) {
+        if (seen.has(diff.toString())) {
+            return false;
+        }
+        seen.set(diff.toString(), true);
+        return true;
     });
 }
