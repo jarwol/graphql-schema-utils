@@ -52,6 +52,9 @@ const mergedType = thisType.merge(otherType);
 <dt><a href="#external_GraphQLInputObjectType">GraphQLInputObjectType</a></dt>
 <dd><p>GraphQL input object type.</p>
 </dd>
+<dt><a href="#GraphQLDiff">GraphQLDiff</a></dt>
+<dd><p>Object containing metadata about a diff between two GraphQL types.</p>
+</dd>
 </dl>
 
 ## Constants
@@ -316,3 +319,29 @@ fields with the other's if there are conflicts. For GraphQLObjectTypes, implemen
 | --- | --- |
 | other | another GraphQL type to merge with this one |
 
+<a name="GraphQLDiff"></a>
+
+## GraphQLDiff
+Object containing metadata about a diff between two GraphQL types.
+
+**Kind**: global class  
+<a name="new_GraphQLDiff_new"></a>
+
+### new GraphQLDiff(thisType, otherType, diffType, description, backwardsCompatible)
+Create a new instance of a GraphQLDiff, containing metadata about a difference between two GraphQL types.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| thisType | <code>GraphQLObjectType</code> &#124; <code>GraphQLScalarType</code> &#124; <code>GraphQLEnumType</code> &#124; <code>GraphQLNonNull</code> &#124; <code>GraphQLList</code> &#124; <code>GraphQLUnionType</code> | the GraphQL type instance on which the `diff` method was executed |
+| otherType | <code>GraphQLObjectType</code> &#124; <code>GraphQLScalarType</code> &#124; <code>GraphQLEnumType</code> &#124; <code>GraphQLNonNull</code> &#124; <code>GraphQLList</code> &#124; <code>GraphQLUnionType</code> | the GraphQL type instance which was compared to thisType |
+| diffType | <code>string</code> | the specific kind of difference between thisType and otherType |
+| description | <code>string</code> |  |
+| backwardsCompatible | <code>boolean</code> | true if this is a non-breaking change when interpreted as thisType changing to otherType |
+
+<a name="DiffType"></a>
+
+## DiffType : <code>Object</code>
+Constants representing valid types of GraphQLDiffs.
+
+**Kind**: global constant  
