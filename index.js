@@ -298,7 +298,7 @@ function diffArguments(thisType, otherType, thisField, otherField, options) {
     let newArgsMap = getArgumentMap(otherField.args);
     oldArgsMap.forEach(function(value, key) {
         if (!newArgsMap.has(key)) {
-            const description = format('Argument missing from {0}: `{1}.{2}({3}: {4})`.', options.labelForThis, thisType, thisField.name, key, value);
+            const description = format('Argument missing from {0}: `{1}.{2}({3}: {4})`.', options.labelForOther, thisType, thisField.name, key, value);
             diffs.push(new GraphQLDiff(thisType, otherType, DiffType.ArgDiff, description, false));
         } else if (newArgsMap.get(key) !== value) {
             const description = format('Argument type diff on field {0}.{1}. {2}: `{3}: {4}` vs. {5}: `{6}: {7}.`', thisType, thisField.name, options.labelForThis, key, value, options.labelForOther, key, newArgsMap.get(key));
@@ -307,7 +307,7 @@ function diffArguments(thisType, otherType, thisField, otherField, options) {
     });
     newArgsMap.forEach(function(value, key) {
        if (!oldArgsMap.has(key)) {
-           const description = format('Argument missing from {0}: `{1}.{2}({3}: {4})`.', options.labelForOther, otherType, otherField.name, key, value);
+           const description = format('Argument missing from {0}: `{1}.{2}({3}: {4})`.', options.labelForThis, otherType, otherField.name, key, value);
            diffs.push(new GraphQLDiff(thisType, otherType, DiffType.ArgDiff, description, true));
        }
     });
