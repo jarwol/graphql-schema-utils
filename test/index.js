@@ -378,8 +378,8 @@ describe('GraphQLSchema', function () {
             const b = buildSchema(schema2);
             const diffs = a.diff(b);
             assert.equal(diffs.length, 3);
-            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.ArgDiff, 'Argument missing from this schema: `FieldOption.value(places: String)`.', false)));
-            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.ArgDiff, 'Argument missing from other schema: `FieldOption.displayName(caps: Boolean)`.', true)));
+            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.ArgDiff, 'Argument missing from other schema: `FieldOption.value(places: String)`.', false)));
+            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.ArgDiff, 'Argument missing from this schema: `FieldOption.displayName(caps: Boolean)`.', true)));
             assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.ArgDiff, 'Argument type diff on field FieldOption.value2. this schema: `places: String` vs. other schema: `places: ID.`', true)));
             done();
         });
@@ -545,7 +545,35 @@ describe('GraphQLSchema', function () {
             const b = buildSchema(schema2);
             const diffs = a.diff(b);
             assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.FieldMissing, 'Field missing from other schema: `Mutation.addDog(name: String): Dog`.', false)));
-            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.ArgDiff, 'Argument missing from this schema: `Mutation.giveBone(bone: String)`.', false)));
+            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.ArgDiff, 'Argument missing from other schema: `Mutation.giveBone(bone: String)`.', false)));
+            done();
+        });
+
+        it('reports diff in list argument', function (done) {
+            const schema1 =
+                'type Query {\n' +
+                '    Dogs(test: [String]): [Dog]\n' +
+                '}\n' +
+                'type Dog {\n' +
+                '    name: String\n' +
+                '    bone: String\n' +
+                '    leash: String\n' +
+                '}';
+
+            const schema2 =
+                'type Query {\n' +
+                '    Dogs: [Dog]\n' +
+                '}\n' +
+                'type Dog {\n' +
+                '    name: String\n' +
+                '    bone: String\n' +
+                '    leash: String\n' +
+                '}';
+
+            const a = buildSchema(schema1);
+            const b = buildSchema(schema2);
+            const diffs = a.diff(b);
+            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.ArgDiff, 'Argument missing from other schema: `Query.Dogs(test: [String])`.', false)));
             done();
         });
 
