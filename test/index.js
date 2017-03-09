@@ -549,6 +549,34 @@ describe('GraphQLSchema', function () {
             done();
         });
 
+        it('reports diff in list argument', function (done) {
+            const schema1 =
+                'type Query {\n' +
+                '    Dogs(test: [String]): [Dog]\n' +
+                '}\n' +
+                'type Dog {\n' +
+                '    name: String\n' +
+                '    bone: String\n' +
+                '    leash: String\n' +
+                '}';
+
+            const schema2 =
+                'type Query {\n' +
+                '    Dogs: [Dog]\n' +
+                '}\n' +
+                'type Dog {\n' +
+                '    name: String\n' +
+                '    bone: String\n' +
+                '    leash: String\n' +
+                '}';
+
+            const a = buildSchema(schema1);
+            const b = buildSchema(schema2);
+            const diffs = a.diff(b);
+            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.ArgDiff, 'Argument missing from other schema: `Query.Dogs(test: [String])`.', false)));
+            done();
+        });
+
         function diffExists(diffs, expectedDiff) {
             for (let i = 0; i < diffs.length; i++) {
                 if (diffs[i].diffType === expectedDiff.diffType && diffs[i].description === expectedDiff.description) {

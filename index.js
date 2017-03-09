@@ -379,13 +379,15 @@ function getArgumentMap(fieldArguments) {
 }
 
 /**
- * Returns the field type name. Appends "!" to non null field types.
+ * Returns the field type name. Appends "!" to non null field types. Appends "[ ]" to list field types
  * @param field
  * @returns {String} field name
  */
 function getFieldTypeName(field) {
     if (field.type instanceof GraphQLNonNull) {
         return field.type.ofType.name + "!";
+    } else if (field.type instanceof GraphQLList) {
+        return "[" + field.type.ofType.name + "]";
     } else {
         return field.type.name;
     }
