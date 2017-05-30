@@ -240,7 +240,7 @@ function diffFields(thisType, otherType, options) {
             }
             const thisTypeName = getFieldTypeName(thisField);
             const otherTypeName = getFieldTypeName(otherField);
-            if (thisField.type.name !== otherField.type.name) {
+            if (thisTypeName !== otherTypeName) {
                 const description = format('Field type changed on field {0}.{1} from : `"{2}"` to `"{3}"`.', thisType, thisField.name, thisTypeName, otherTypeName);
                 diffs.push(new GraphQLDiff(thisType, otherType, DiffType.FieldDiff, description, false));
             }
@@ -384,12 +384,16 @@ function getArgumentMap(fieldArguments) {
  * @returns {String} field name
  */
 function getFieldTypeName(field) {
-    if (field.type instanceof GraphQLNonNull) {
-        return field.type.ofType.name + "!";
-    } else if (field.type instanceof GraphQLList) {
-        return "[" + field.type.ofType.name + "]";
+    return buildTypeString(field.type)
+}
+
+function buildTypeString(type) {
+    if (type instanceof GraphQLNonNull) {
+        return buildTypeString(type.ofType) + "!";
+    } else if (type instanceof GraphQLList) {
+        return "[" + buildTypeString(type.ofType) + "]";
     } else {
-        return field.type.name;
+        return type.name;
     }
 }
 

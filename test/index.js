@@ -577,6 +577,38 @@ describe('GraphQLSchema', function () {
             done();
         });
 
+        it('reports diff for different field types when nested GraphQLNonNull and GraphQLList', function (done) {
+            const schema1 =
+                'type Query {\n' +
+                '    myTags: Tag!\n' +
+                '}\n' +
+                'type Tag {\n' +
+                '    notNullString: String!\n' +
+                '    listNotNullString: [String!]\n' +
+                '    notNullListNotNullString: [String!]!\n' +
+                '    listNotNullListNotNullString: [[String!]!]\n' +
+                '}';
+
+            const schema2 =
+                'type Query {\n' +
+                '    myTags: Tag!\n' +
+                '}\n' +
+                'type Tag {\n' +
+                '    notNullString: String\n' +
+                '    listNotNullString: String!\n' +
+                '    notNullListNotNullString: [String!]\n' +
+                '    listNotNullListNotNullString: [String!]!\n' +
+                '}';
+            const a = buildSchema(schema1);
+            const b = buildSchema(schema2);
+            const diffs = a.diff(b);
+            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.FieldDiff, 'Field type changed on field Tag.notNullString from : `"String!"` to `"String"`.', false)));
+            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.FieldDiff, 'Field type changed on field Tag.listNotNullString from : `"[String!]"` to `"String!"`.', false)));
+            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.FieldDiff, 'Field type changed on field Tag.notNullListNotNullString from : `"[String!]!"` to `"[String!]"`.', false)));
+            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.FieldDiff, 'Field type changed on field Tag.listNotNullListNotNullString from : `"[[String!]!]"` to `"[String!]!"`.', false)));
+            done();
+        });
+
         function diffExists(diffs, expectedDiff) {
             for (let i = 0; i < diffs.length; i++) {
                 if (diffs[i].diffType === expectedDiff.diffType && diffs[i].description === expectedDiff.description) {
