@@ -504,13 +504,14 @@ function mergeObjectTypes(other) {
     if (this.constructor.name !== other.constructor.name) {
         throw new TypeError(format('Cannot merge with different base type. this: {0}, other: {0}.', this.constructor.name, other.constructor.name));
     }
-    const otherFields = Object.keys(other.getFields());
-    for (let i = 0; i < otherFields.length; i++) {
-        const key = otherFields[i];
-        if (other.getFields().hasOwnProperty(key)) {
-            mergedType._fields[key] = other.getFields()[key];
-        }
-    }
+    
+    if(!mergedType._fields){
+      mergedType.getFields(); // set's _fields
+    };
+
+    Object.keys(other.getFields()).forEach((key) => {
+      mergedType._fields[key] = other._fields[key];
+    });
 
     if (this instanceof GraphQLObjectType) {
         mergedType._interfaces = Array.from(new Set(this.getInterfaces().concat(other.getInterfaces())));
