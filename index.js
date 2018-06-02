@@ -229,37 +229,33 @@ function diffObjectTypes(other, options) {
 
 function diffFields(thisType, otherType, options) {
     let diffs = [];
-    for (let key in thisType.getFields()) {
-        if (thisType.getFields().hasOwnProperty(key)) {
-            const thisField = thisType.getFields()[key];
-            const otherField = otherType.getFields()[key];
-            if (!otherField) {
-                const description = format('Field missing from {0}: `{1}.{2}`.', options.labelForOther, thisType.name, getFieldString(thisField));
-                diffs.push(new GraphQLDiff(thisType, otherType, DiffType.FieldMissing, description, false));
-                continue;
-            }
-            const thisTypeName = getFieldTypeName(thisField);
-            const otherTypeName = getFieldTypeName(otherField);
-            if (thisTypeName !== otherTypeName) {
-                const description = format('Field type changed on field {0}.{1} from : `"{2}"` to `"{3}"`.', thisType, thisField.name, thisTypeName, otherTypeName);
-                diffs.push(new GraphQLDiff(thisType, otherType, DiffType.FieldDiff, description, false));
-            }
-            if (thisField.description !== otherField.description) {
-                const description = format('Description diff on field {0}.{1}. {2}: `"{3}"` vs. {4}: `"{5}"`.', thisType.name, key, options.labelForThis, thisField.description, options.labelForOther, otherField.description)
-                diffs.push(new GraphQLDiff(thisType, otherType, DiffType.FieldDescriptionDiff, description, true));
-            }
-            diffs = diffs.concat(diffArguments(thisType, otherType, thisField, otherField, options));
-            diffs = diffs.concat(diffArgDescriptions(thisType, otherType, thisField, otherField, options));
+    for (let key of Object.keys(thisType.getFields())) {
+        const thisField = thisType.getFields()[key];
+        const otherField = otherType.getFields()[key];
+        if (!otherField) {
+            const description = format('Field missing from {0}: `{1}.{2}`.', options.labelForOther, thisType.name, getFieldString(thisField));
+            diffs.push(new GraphQLDiff(thisType, otherType, DiffType.FieldMissing, description, false));
+            continue;
         }
+        const thisTypeName = getFieldTypeName(thisField);
+        const otherTypeName = getFieldTypeName(otherField);
+        if (thisTypeName !== otherTypeName) {
+            const description = format('Field type changed on field {0}.{1} from : `"{2}"` to `"{3}"`.', thisType, thisField.name, thisTypeName, otherTypeName);
+            diffs.push(new GraphQLDiff(thisType, otherType, DiffType.FieldDiff, description, false));
+        }
+        if (thisField.description !== otherField.description) {
+            const description = format('Description diff on field {0}.{1}. {2}: `"{3}"` vs. {4}: `"{5}"`.', thisType.name, key, options.labelForThis, thisField.description, options.labelForOther, otherField.description)
+            diffs.push(new GraphQLDiff(thisType, otherType, DiffType.FieldDescriptionDiff, description, true));
+        }
+        diffs = diffs.concat(diffArguments(thisType, otherType, thisField, otherField, options));
+        diffs = diffs.concat(diffArgDescriptions(thisType, otherType, thisField, otherField, options));
     }
-    for (let key in otherType.getFields()) {
-        if (otherType.getFields().hasOwnProperty(key)) {
-            const thisField = thisType.getFields()[key];
-            const otherField = otherType.getFields()[key];
-            if (!thisField) {
-                const description = format('Field missing from {0}: `{1}.{2}`.', options.labelForThis, thisType.name, getFieldString(otherField));
-                diffs.push(new GraphQLDiff(thisType, otherType, DiffType.FieldMissing, description, true));
-            }
+    for (let key of Object.keys(otherType.getFields())) {
+        const thisField = thisType.getFields()[key];
+        const otherField = otherType.getFields()[key];
+        if (!thisField) {
+            const description = format('Field missing from {0}: `{1}.{2}`.', options.labelForThis, thisType.name, getFieldString(otherField));
+            diffs.push(new GraphQLDiff(thisType, otherType, DiffType.FieldMissing, description, true));
         }
     }
     return diffs;
