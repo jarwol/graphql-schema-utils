@@ -194,7 +194,7 @@ function diffUnionTypes(other, options) {
 
     if (thisType !== otherType) {
         const description = format('Difference in union type {0}. {1}: `{2}` vs. {3}: `{4}`.', this.name, options.labelForThis, thisType, options.labelForOther, otherType);
-        diffs.push(new GraphQLDiff(this, other, DiffType.UnionTypeDiff, description, true));
+        diffs.push(new GraphQLDiff(this, other, DiffType.UnionTypeDiff, description, false));
     }
     return diffs;
 }
@@ -240,8 +240,9 @@ function diffFields(thisType, otherType, options) {
         const thisTypeName = getFieldTypeName(thisField);
         const otherTypeName = getFieldTypeName(otherField);
         if (thisTypeName !== otherTypeName) {
+            const backwardCompatible = thisTypeName === otherTypeName + '!';
             const description = format('Field type changed on field {0}.{1} from : `"{2}"` to `"{3}"`.', thisType, thisField.name, thisTypeName, otherTypeName);
-            diffs.push(new GraphQLDiff(thisType, otherType, DiffType.FieldDiff, description, false));
+            diffs.push(new GraphQLDiff(thisType, otherType, DiffType.FieldDiff, description, backwardCompatible));
         }
         if (thisField.description !== otherField.description) {
             const description = format('Description diff on field {0}.{1}. {2}: `"{3}"` vs. {4}: `"{5}"`.', thisType.name, key, options.labelForThis, thisField.description, options.labelForOther, otherField.description)
