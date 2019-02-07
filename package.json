@@ -1,6 +1,6 @@
 {
   "name": "graphql-schema-utils",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "Extensions for graphql-js to support diffing and merging types and schemas.",
   "main": "index.js",
   "scripts": {
