@@ -515,7 +515,7 @@ describe('GraphQLSchema', function () {
             const a = buildSchema(schema1);
             const b = buildSchema(schema2);
             const diffs = a.diff(b);
-            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.UnionTypeDiff, 'Difference in union type Pet. this schema: `Cat | Dog` vs. other schema: `Cat | Dog | Fish`.', false)));
+            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.UnionTypeDiff, 'Difference in union type Pet. this schema: `Cat | Dog` vs. other schema: `Cat | Dog | Fish`.', true)));
             done();
         });
 

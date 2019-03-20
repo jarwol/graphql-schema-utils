@@ -193,8 +193,9 @@ function diffUnionTypes(other, options) {
     }).sort().join(' | ');
 
     if (thisType !== otherType) {
+        const backwardsCompatible = otherType.indexOf(thisType) >= 0;
         const description = format('Difference in union type {0}. {1}: `{2}` vs. {3}: `{4}`.', this.name, options.labelForThis, thisType, options.labelForOther, otherType);
-        diffs.push(new GraphQLDiff(this, other, DiffType.UnionTypeDiff, description, false));
+        diffs.push(new GraphQLDiff(this, other, DiffType.UnionTypeDiff, description, backwardsCompatible));
     }
     return diffs;
 }
