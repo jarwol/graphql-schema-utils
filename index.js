@@ -241,7 +241,7 @@ function diffFields(thisType, otherType, options) {
         const thisTypeName = getFieldTypeName(thisField);
         const otherTypeName = getFieldTypeName(otherField);
         if (thisTypeName !== otherTypeName) {
-            const backwardCompatible = thisTypeName === otherTypeName + '!';
+            const backwardCompatible = (thisTypeName === otherTypeName + '!') || (otherTypeName === thisTypeName + '!');
             const description = format('Field type changed on field {0}.{1} from : `"{2}"` to `"{3}"`.', thisType, thisField.name, thisTypeName, otherTypeName);
             diffs.push(new GraphQLDiff(thisType, otherType, DiffType.FieldDiff, description, backwardCompatible));
         }

@@ -263,7 +263,7 @@ describe('GraphQLSchema', function () {
             done();
         });
 
-        it('reports backwards incompatible diff if a field changes from optional to required', function (done) {
+        it('reports backwards compatible diff if a field changes from optional to required', function (done) {
             const schema1 =
                 'type Query {\n' +
                 '    Tags: [Tag]\n' +
@@ -282,7 +282,7 @@ describe('GraphQLSchema', function () {
             const a = buildSchema(schema1);
             const b = buildSchema(schema2);
             const diffs = a.diff(b);
-            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.FieldDiff, 'Field type changed on field Tag.value from : `"String"` to `"String!"`.', false)));
+            assert(diffExists(diffs, new GraphQLDiff(a, b, DiffType.FieldDiff, 'Field type changed on field Tag.value from : `"String"` to `"String!"`.', true)));
             done();
         });
 
